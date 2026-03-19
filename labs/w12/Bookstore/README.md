@@ -15,7 +15,7 @@ Bookstore is a simple inventory service with Book entities (ISBN, title, author,
 ## For this lab
 
 1. Create a branch called `labw12_01` and switch to it.
-1. Run the command `dotnet test --collect:"Code Coverage"` to generate an initial code coverage report.
+1. Run the command `dotnet test --collect:"XPlat Code Coverage"` to generate an initial code coverage report.
 1. Validate the current coverage of the project by running the command:
    ```
    reportgenerator -reports:'Bookstore.Tests/TestResults/**/coverage.cobertura.xml' -targetdir:coverage-report -reporttypes:Html

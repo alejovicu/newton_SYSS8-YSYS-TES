@@ -4,7 +4,7 @@ namespace CalculatorApp.Tests;
 public class UnitTestCalculatorSum
 {
     [TestMethod]
-    public void TestSum()
+    public void TestSumTwoPositiveNumbers()
     {
         // Arrange
         var calculator = new Calculator();

@@ -1,6 +1,7 @@
 **/bin/
 **/obj/
 **/TestResults/
+**/coverage-report/
 
 
 *.user

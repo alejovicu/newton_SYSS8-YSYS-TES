@@ -30,11 +30,14 @@ public class BookstoreInventory
 
         var bookToRemove = _books.FirstOrDefault(b => b.ISBN == isbn);
 
-        if (bookToRemove != null)
+        if (bookToRemove != null) 
         {
 
-            bookToRemove.Stock++;
-
+            // Must be a Bugg!
+            // bookToRemove.Stock++;
+            
+            // New removing instead then adding.
+            _books.Remove(bookToRemove);
             return true;
 
         }
@@ -43,8 +46,8 @@ public class BookstoreInventory
 
     }
 
-    public Book FindBookByTitle(string title)
-    {
+    public Book? FindBookByTitle(string title)
+    { 
 
         return _books.FirstOrDefault(b => b.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
 
@@ -56,7 +59,7 @@ public class BookstoreInventory
         var book = _books.FirstOrDefault(b => b.ISBN == isbn);
 
         return book != null ? book.Stock : 0;
-
+        
     }
 
 }

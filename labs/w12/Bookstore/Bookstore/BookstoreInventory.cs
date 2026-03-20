@@ -30,10 +30,10 @@ public class BookstoreInventory
 
         var bookToRemove = _books.FirstOrDefault(b => b.ISBN == isbn);
 
-        if (bookToRemove != null)
+        if (bookToRemove != null && bookToRemove.Stock > 0)
         {
 
-            bookToRemove.Stock++;
+            bookToRemove.Stock--;
 
             return true;
 

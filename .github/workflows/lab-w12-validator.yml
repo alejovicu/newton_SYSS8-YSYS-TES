@@ -1,0 +1,85 @@
+name: Run Tests with Coverage
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_url:
+        description: "Repository URL to clone"
+        required: true
+      branch:
+        description: "Branch to checkout"
+        required: true
+        default: "main"
+      project_path:
+        description: "Path inside repo to run commands"
+        required: true
+        default: "."
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Clone target repository
+        run: |
+          git clone --branch ${{ github.event.inputs.branch }} ${{ github.event.inputs.repo_url }} repo
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install ReportGenerator
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Run tests with coverage
+        working-directory: repo/${{ github.event.inputs.project_path }}
+        run: |
+          dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Generate coverage report
+        working-directory: repo/${{ github.event.inputs.project_path }}
+        run: |
+          reportgenerator \
+            -reports:'Bookstore.Tests/TestResults/**/coverage.cobertura.xml' \
+            -targetdir:coverage-report \
+            -reporttypes:Html
+
+      - name: Validate coverage >= 75%
+        working-directory: repo/${{ github.event.inputs.project_path }}
+        run: |
+          FILE=$(find . -name 'coverage.cobertura.xml' | head -n 1)
+
+          if [ -z "$FILE" ]; then
+            echo "❌ Coverage file not found!"
+            exit 1
+          fi
+
+          echo "Found coverage file: $FILE"
+
+          COVERAGE=$(grep -oP 'line-rate="\K[0-9.]+' "$FILE")
+          PERCENT=$(echo "$COVERAGE * 100" | bc -l)
+
+          echo "Coverage: $PERCENT%"
+
+          THRESHOLD=75
+
+          RESULT=$(echo "$PERCENT >= $THRESHOLD" | bc -l)
+
+          if [ "$RESULT" -ne 1 ]; then
+            echo "❌ Coverage is below ${THRESHOLD}%"
+            exit 1
+          else
+            echo "✅ Coverage meets threshold (${THRESHOLD}%)"
+          fi
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: repo/${{ github.event.inputs.project_path }}/coverage-report

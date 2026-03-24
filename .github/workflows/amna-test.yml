@@ -1,0 +1,31 @@
+name: Run Unit Tests for Lab W13
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to checkout"
+        required: false
+        default: "main"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Clone target repository
+        run: |
+          git clone --branch lab_w13 https://github.com/amnaaldaraji/newton_SYSS8-YSYS-TES repo
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Run tests with coverage
+        working-directory: repo/class/w13/mockDatabase/ClassExcercise
+        run: |
+          dotnet test

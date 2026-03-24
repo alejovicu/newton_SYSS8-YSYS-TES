@@ -65,6 +65,5 @@ public class BookstoreInventory
 
         return book != null ? book.Stock : 0;
 
-    }
-
+    }    
 }

@@ -18,7 +18,7 @@ jobs:
 
       - name: Clone target repository
         run: |
-          git clone --branch [YOUR BRANCH] [REPO_URL] repo
+          git clone --branch labw12-01 https://github.com/SajadHabibi970/newton_SYSS8-YSYS-TES.git repo
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

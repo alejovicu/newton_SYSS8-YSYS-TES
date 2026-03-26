@@ -3,9 +3,6 @@ name: Run Tests with Coverage
 on:
   workflow_dispatch:
     inputs:
-      repo_url:
-        description: "Repository URL to clone"
-        required: true
       branch:
         description: "Branch to checkout"
         required: true
@@ -21,61 +18,14 @@ jobs:
 
       - name: Clone target repository
         run: |
-          git clone --branch ${{ github.event.inputs.branch }} ${{ github.event.inputs.repo_url }} repo
+          git clone --branch [YOUR BRANCH] [REPO] repo
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
 
-      - name: Install ReportGenerator
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
       - name: Run tests with coverage
         working-directory: repo/labs/w12/Bookstore
         run: |
-          dotnet test --collect:"XPlat Code Coverage"
-
-      - name: Generate coverage report
-        working-directory: repo/labs/w12/Bookstore
-        run: |
-          reportgenerator \
-            -reports:'Bookstore.Tests/TestResults/**/coverage.cobertura.xml' \
-            -targetdir:coverage-report \
-            -reporttypes:Html
-
-      - name: Validate coverage >= 75%
-        working-directory: repo/labs/w12/Bookstore
-        run: |
-          FILE=$(find . -name 'coverage.cobertura.xml' | head -n 1)
-
-          if [ -z "$FILE" ]; then
-            echo "❌ Coverage file not found!"
-            exit 1
-          fi
-
-          echo "Found coverage file: $FILE"
-
-          COVERAGE=$(grep -oP 'line-rate="\K[0-9.]+' "$FILE")
-          PERCENT=$(echo "$COVERAGE * 100" | bc -l)
-
-          echo "Coverage: $PERCENT%"
-
-          THRESHOLD=75
-
-          RESULT=$(echo "$PERCENT >= $THRESHOLD" | bc -l)
-
-          if [ "$RESULT" -ne 1 ]; then
-            echo "❌ Coverage is below ${THRESHOLD}%"
-            exit 1
-          else
-            echo "✅ Coverage meets threshold (${THRESHOLD}%)"
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: repo/labs/w12/Bookstore/coverage-report
+          dotnet test

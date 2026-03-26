@@ -1,0 +1,31 @@
+name: Run Tests with Coverage
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to checkout"
+        required: true
+        default: "main"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Clone target repository
+        run: |
+          git clone --branch [YOUR BRANCH] [REPO] repo
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Run tests with coverage
+        working-directory: repo/labs/w12/Bookstore
+        run: |
+          dotnet test

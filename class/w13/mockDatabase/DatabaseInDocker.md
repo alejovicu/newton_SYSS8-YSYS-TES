@@ -1,4 +1,4 @@
-# Lab 2: Mocking
+# PostgreSQL: Create a Database in Docker
 
 In this assignment you will learn different ways to mock
 
@@ -25,7 +25,11 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL
 );
+```
 
+
+If you want to create data you can:
+```SQL
 INSERT INTO users (name) VALUES
 ('Alice'),
 ('Bob'),

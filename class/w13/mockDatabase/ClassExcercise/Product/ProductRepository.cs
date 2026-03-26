@@ -31,17 +31,22 @@ namespace ProductManager
             _connection.Open();
 
             using var cmd = _connection.CreateCommand();
-            cmd.CommandText = $"SELECT id, name, category FROM Products WHERE Category = '{Category}'";
+            cmd.CommandText = $"SELECT id, name, category FROM Products";
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
-                products.Add(new Product
+                var product = new Product
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
                     Category = reader.GetString(2)
-                });
+                };
+
+                if (product.Category == Category)
+                {
+                    products.Add(product);
+                }
             }
 
             _connection.Close();

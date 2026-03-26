@@ -38,12 +38,15 @@ namespace ProductManager.Tests
 
             // Setup mock Read to increment and read value
             var readCallCount = 0;
-            mockReader.Setup(r => r.Read()).Returns(() => readCallCount++ == 0);
+            mockReader.Setup(r => r.Read()).Returns(() => readCallCount++ < 2);
 
             // Mock return values for ID, Name and Category
-            mockReader.Setup(r => r.GetInt32(0)).Returns(1);
-            mockReader.Setup(r => r.GetString(1)).Returns("iPhone 17 Pro");
-            mockReader.Setup(r => r.GetString(2)).Returns("Technology");
+            mockReader.Setup(r => r.GetInt32(0))
+                .Returns(() => readCallCount == 1 ? 1 : 2);
+            mockReader.Setup(r => r.GetString(1))
+                .Returns(() => readCallCount == 1 ? "iPhone 17 Pro" : "Banana");
+            mockReader.Setup(r => r.GetString(2))
+                .Returns(() => readCallCount == 1 ? "Technology" : "Food");
 
             // Setup ExecuteReader() to return our mock reader
             mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);

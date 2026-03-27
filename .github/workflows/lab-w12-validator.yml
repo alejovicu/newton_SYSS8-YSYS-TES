@@ -3,6 +3,9 @@ name: Run Tests with Coverage
 on:
   workflow_dispatch:
     inputs:
+      repo_url:
+        description: "HTTPS URL of the repository to clone"
+        required: true
       branch:
         description: "Branch to checkout"
         required: true
@@ -13,12 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout current repo
-        uses: actions/checkout@v4
-
       - name: Clone target repository
         run: |
-          git clone --branch [YOUR BRANCH] [REPO] repo
+          git clone --branch ${{ github.event.inputs.branch }} ${{ github.event.inputs.repo_url }} repo
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -28,4 +28,4 @@ jobs:
       - name: Run tests with coverage
         working-directory: repo/labs/w12/Bookstore
         run: |
-          dotnet test
+          dotnet test --collect:"XPlat Code Coverage"

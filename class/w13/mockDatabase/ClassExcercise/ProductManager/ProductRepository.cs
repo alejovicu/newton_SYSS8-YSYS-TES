@@ -25,7 +25,7 @@ public class ProductRepository : IProductRepository
         _connection.Open();
 
         using var cmd = _connection.CreateCommand();
-        cmd.CommandText = "SELECT id, name, category, price FROM products WHERE category = 'Tech'";
+        cmd.CommandText = "SELECT id, name, category, price FROM products WHERE category = '" + category + "'";
         using var reader = cmd.ExecuteReader();
 
         while (reader.Read())

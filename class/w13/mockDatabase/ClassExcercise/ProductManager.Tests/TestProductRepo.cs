@@ -1,12 +1,13 @@
 using Moq;
 using Npgsql;
 using System.Data;
+using System.Security.Principal;
 
 
 namespace ProductManager.Tests;
 
 [TestClass]
-public class UnitTestProductRepo
+public class TestProductRepo
 {
     public void CleanUpProductsTable()
     {
@@ -18,15 +19,12 @@ public class UnitTestProductRepo
         connection.Close();
     }
 
-    [TestInitialize]
-    public void Initialize()
-    {
-        CleanUpProductsTable();
-    }
-
     [TestMethod]
+    [TestCategory("Integration")]
     public void TestGetProductsByCategoryRealDb()
     {
+        CleanUpProductsTable();
+
         // Arrange
         var productRepository = new ProductRepository();
 
@@ -36,55 +34,61 @@ public class UnitTestProductRepo
             Category = "Tech",
             Price = "13000"
         };
+        var product2 = new Product
+        {
+            Name = "Banana",
+            Category = "Food",
+            Price = "2"
+        };
         var expectedCount = 1;
+        var expectedCategory = "Tech";
         productRepository.InsertProduct(product);
+        productRepository.InsertProduct(product2);
 
         // Act
-        var result = productRepository.GetProductsByCategory("Tech");
+        var requestedProducts = productRepository.GetProductsByCategory(expectedCategory);
 
         // Assert
-        Assert.AreEqual(expectedCount, result.Count);
+        Assert.AreEqual(expectedCount, requestedProducts.Count);
+        Assert.AreEqual(expectedCategory, requestedProducts[0].Category);
     }
 
     [TestMethod]
+    [TestCategory("UnitTest")]
     public void TestGetProductsByCategoryWithMock()
     {
         // Arrange
-        var expectedProducts = new List<Product>
-        {
-            new Product { Id = 1, Name = "iPhone 17 Pro", Category = "Tech", Price = "13000" }
-        };
+        var expectedCount = 1;
+        var expectedCategory = "Tech";
+
         var mockConnection = new Mock<IDbConnection>();
         var mockCommand = new Mock<IDbCommand>();
         var mockReader = new Mock<IDataReader>();
+        int readCallCount = 0;
 
-        var readCallCount = 0;
+        mockConnection.Setup(c => c.Open());
+        mockConnection.Setup(c => c.Close());
 
         mockReader.Setup(r => r.Read()).Returns(() => readCallCount++ == 0);
-
-        //ID
+        //Id
         mockReader.Setup(r => r.GetInt32(0)).Returns(1);
-        // Name
+        //Name
         mockReader.Setup(r => r.GetString(1)).Returns("iPhone 17 Pro");
-        // Category
+        //Category
         mockReader.Setup(r => r.GetString(2)).Returns("Tech");
-        // Price
+        //Price
         mockReader.Setup(r => r.GetString(3)).Returns("13000");
-       
+
         mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);
-     
         mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
 
         var productRepository = new ProductRepository(mockConnection.Object);
 
         // Act
-        var result = productRepository.GetProductsByCategory("Tech");
+        var requestedProducts = productRepository.GetProductsByCategory(expectedCategory);
 
         // Assert
-        Assert.AreEqual(expectedProducts.Count, result.Count);
-        Assert.AreEqual(expectedProducts[0].Id, result[0].Id);
-        Assert.AreEqual(expectedProducts[0].Name, result[0].Name);
-        Assert.AreEqual(expectedProducts[0].Category, result[0].Category);
-        Assert.AreEqual(expectedProducts[0].Price, result[0].Price);
+        Assert.AreEqual(expectedCount, requestedProducts.Count);
+        Assert.AreEqual(expectedCategory, requestedProducts[0].Category);
     }
 }

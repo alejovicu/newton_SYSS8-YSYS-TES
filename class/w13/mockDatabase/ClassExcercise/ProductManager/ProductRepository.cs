@@ -1,6 +1,7 @@
+using Npgsql;
 using System.Collections.Generic;
 using System.Data;
-using Npgsql;
+using System.Linq;
 
 namespace ProductManager;
 
@@ -25,7 +26,7 @@ public class ProductRepository : IProductRepository
         _connection.Open();
 
         using var cmd = _connection.CreateCommand();
-        cmd.CommandText = "SELECT id, name, category, price FROM products WHERE category = '" + category + "'";
+        cmd.CommandText = "SELECT id, name, category, price FROM products";
         using var reader = cmd.ExecuteReader();
 
         while (reader.Read())
@@ -40,7 +41,7 @@ public class ProductRepository : IProductRepository
         }
         _connection.Close();
 
-        return products;
+        return products.Where(p => p.Category == category).ToList();
     }
 
     public void InsertProduct(Product product)

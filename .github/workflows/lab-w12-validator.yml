@@ -3,6 +3,9 @@ name: Run Unit Tests for Lab w12
 on:
   workflow_dispatch:
     inputs:
+      repo_url:
+        description: "HTTPS URL of the repository to clone"
+        required: true
       branch:
         description: "Branch to checkout"
         required: true
@@ -13,9 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout current repo
-        uses: actions/checkout@v4
-
       - name: Clone target repository
         run: |
           git clone --branch labw12_01 https://github.com/Axel-Newton/newton_SYSS8-YSYS-TES.git repo

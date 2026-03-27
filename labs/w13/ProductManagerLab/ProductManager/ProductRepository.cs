@@ -10,7 +10,7 @@ public class ProductRepository : IProductRepository
     public ProductRepository()
     {
         _connection =
-            new NpgsqlConnection("Host=localhost;Port=5433;Username=postgres;Password=postgres;Database=productsdb");
+            new NpgsqlConnection("Host=localhost;Port=5433;Username=postgres;Password=postgres;Database=productsdb;SSL Mode=Disable");
     }
 
     public ProductRepository(IDbConnection connection)

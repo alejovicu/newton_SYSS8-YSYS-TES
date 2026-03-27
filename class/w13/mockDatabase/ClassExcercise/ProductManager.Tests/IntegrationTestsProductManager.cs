@@ -14,6 +14,16 @@ public class IntegrationTestsProductManager
     private const string TestProductName2 = "TEST_MacBook Pro";
     private const string TestProductName3 = "TEST_Margherita Pizza";
 
+    private static void InsertProduct(NpgsqlCommand cmd, string name, string category, double price)
+    {
+        cmd.CommandText = "INSERT INTO products (name, category, price) VALUES (@name, @category::product_category, @price)";
+        cmd.Parameters.AddWithValue("@name", name);
+        cmd.Parameters.AddWithValue("@category", category);
+        cmd.Parameters.AddWithValue("@price", price);
+        cmd.ExecuteNonQuery();
+        cmd.Parameters.Clear();
+    }
+
     [TestCleanup]
     public void Cleanup()
     {
@@ -32,15 +42,10 @@ public class IntegrationTestsProductManager
         using var connection = new NpgsqlConnection(ConnectionString);
         connection.Open();
         using var cmd = connection.CreateCommand();
-        
-        cmd.CommandText = $"INSERT INTO products (name, category, price) VALUES ('{TestProductName1}', 'Tech'::product_category, 999.99)";
-        cmd.ExecuteNonQuery();
 
-        cmd.CommandText = $"INSERT INTO products (name, category, price) VALUES ('{TestProductName2}', 'Tech'::product_category, 799.99)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = $"INSERT INTO products (name, category, price) VALUES ('{TestProductName3}', 'Food'::product_category, 12.99)";
-        cmd.ExecuteNonQuery();
+        InsertProduct(cmd, TestProductName1, "Tech", 999.99);
+        InsertProduct(cmd, TestProductName2, "Tech", 799.99);
+        InsertProduct(cmd, TestProductName3, "Food", 12.99);
 
         var productManager = new ProductManager();
 
@@ -51,5 +56,6 @@ public class IntegrationTestsProductManager
         Assert.IsTrue(results.All(p => p.Category == "Tech"));
         Assert.IsTrue(results.Any(p => p.Name == TestProductName1));
         Assert.IsTrue(results.Any(p => p.Name == TestProductName2));
+        Assert.IsFalse(results.Any(p => p.Name == TestProductName3));
     }
 }

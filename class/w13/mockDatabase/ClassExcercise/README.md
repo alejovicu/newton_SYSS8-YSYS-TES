@@ -24,7 +24,8 @@ Let's Start
     Use the attribute from MSTest to mark this test as an Integration test
     `[TestCategory("Integration")]`
 
-1. In the library project `ProductManager` implement the function `GetProductsByCategory`
+1. In the library project `ProductManager` implement the function `GetProductsByCategory`.
+    **The logic to filter the products by category must be implemented on C# and not in SQL**
 
 1. Run the integration test. It should pass even if you run it several times.
 

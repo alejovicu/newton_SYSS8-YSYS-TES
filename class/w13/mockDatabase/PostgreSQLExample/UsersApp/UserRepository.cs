@@ -9,7 +9,7 @@ public class UserRepository
 
     public UserRepository()
     {
-        _connectionString = "Host=localhost;Port=5432;Username=testuser;Password=testpass;Database=testdb";
+        _connectionString = "Host=localhost;Port=5432;Username=postgres;Password=mysecretpassword;Database=postgres";
     }
 
     public List<User> GetAllUsers()

@@ -1,4 +1,7 @@
-﻿namespace DefaultNamespace;
+﻿using System.Data;
+using Npgsql;
+
+namespace ProductManager;
 
 public class ProductRepository
 {

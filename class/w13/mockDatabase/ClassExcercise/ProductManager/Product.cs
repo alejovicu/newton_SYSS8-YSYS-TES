@@ -1,6 +1,6 @@
 ﻿namespace ProductManager;
 
-public class ProductManager
+public class Product
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";

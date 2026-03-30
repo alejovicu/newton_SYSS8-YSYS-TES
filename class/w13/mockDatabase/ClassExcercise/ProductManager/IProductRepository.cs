@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace;
+﻿namespace ProductManager;
 
 public interface IProductRepository
 {

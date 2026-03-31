@@ -12,13 +12,6 @@ public class RickAndMortyCharacterServiceUnitTests
     private Mock<HttpMessageHandler> _mockHandler = null!;
     private HttpClient _httpClient = null!;
 
-    [TestInitialize]
-    public void Setup()
-    {
-        _mockHandler = new Mock<HttpMessageHandler>();
-        _httpClient = new HttpClient(_mockHandler.Object);
-        _service = new RickAndMortyCharacterService(_httpClient);
-    }
 
     private string GetMockCharacterResponse()
     {
@@ -99,6 +92,9 @@ public class RickAndMortyCharacterServiceUnitTests
     public async Task GetCharactersVerifyRickExists()
     {
         // Arrange
+        _mockHandler = new Mock<HttpMessageHandler>();
+        _httpClient = new HttpClient(_mockHandler.Object);
+        _service = new RickAndMortyCharacterService(_httpClient);
         SetupMockHandler(GetMockCharacterResponse());
 
         // Act
@@ -116,6 +112,10 @@ public class RickAndMortyCharacterServiceUnitTests
     public async Task GetCharactersVerifyMortyExists()
     {
         // Arrange
+        _mockHandler = new Mock<HttpMessageHandler>();
+        _httpClient = new HttpClient(_mockHandler.Object);
+        _service = new RickAndMortyCharacterService(_httpClient);
+        SetupMockHandler(GetMockCharacterResponse());
         SetupMockHandler(GetMockCharacterResponse());
 
         // Act

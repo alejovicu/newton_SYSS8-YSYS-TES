@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RickAndMortyApp.Tests/RickAndMortyApp.Tests.csproj" />
+  <Project Path="RickAndMortyApp/RickAndMortyApp.csproj" />
+</Solution>

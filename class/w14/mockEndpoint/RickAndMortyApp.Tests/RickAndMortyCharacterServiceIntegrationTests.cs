@@ -12,8 +12,13 @@ public class RickAndMortyCharacterServiceIntegrationTests
         _service = new RickAndMortyCharacterService();
     }
 
-    // Here we use  async Task instead of void because
-    // we want to await the GetCharactersAsync method and ensure that the test waits for the asynchronous operation to complete before making assertions. This allows us to properly test the asynchronous behavior of the method and ensures that we are checking the results after the data has been retrieved.
+    // Here we use async Task instead of void because
+    // we want to await the GetCharactersAsync method and 
+    // ensure that the test waits for the asynchronous operation 
+    // to complete before making assertions. 
+    // This allows us to properly test the asynchronous behavior 
+    // of the method and ensures that we are checking the results
+    // after the data has been retrieved.
 
     [TestMethod]
     public async Task GetCharactersVerifyRickExists()

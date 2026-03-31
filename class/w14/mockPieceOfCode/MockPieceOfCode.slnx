@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OrderLibrary.Tests/OrderLibrary.Tests.csproj" />
+  <Project Path="OrderLibrary/OrderLibrary.csproj" />
+</Solution>

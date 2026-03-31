@@ -29,24 +29,37 @@ namespace ProductManager.Tests
         public void TestGetProductByCategory_ValidateExpected()
         {
             // Arrange
-            var expectedProductCount = 1;
+            var expectedProductCount = 2;
             var expectedCategoryTerm = "Technology";
 
             var mockConnection = new Mock<IDbConnection>();
             var mockCommand = new Mock<IDbCommand>();
             var mockReader = new Mock<IDataReader>();
 
+            var rows = new List<(int Id, string Name, string Category)>
+            {
+                (1, "iPhone 17 Pro", "Technology"),
+                (2, "Table", "Furniture"),
+                (3, "MacBook Pro", "Technology"),
+                (4, "Chair", "Furniture"),
+            };
+            int rowIndex = -1;
+
             // Setup mock Read to increment and read value
-            var readCallCount = 0;
-            mockReader.Setup(r => r.Read()).Returns(() => readCallCount++ < 2);
+            mockReader.Setup(r => r.Read()).Returns(() =>
+            {
+                rowIndex++;
+                return rowIndex < rows.Count;
+            });
+
 
             // Mock return values for ID, Name and Category
             mockReader.Setup(r => r.GetInt32(0))
-                .Returns(() => readCallCount == 1 ? 1 : 2);
+                .Returns(() => rows[rowIndex].Id);
             mockReader.Setup(r => r.GetString(1))
-                .Returns(() => readCallCount == 1 ? "iPhone 17 Pro" : "Banana");
+                .Returns(() => rows[rowIndex].Name);
             mockReader.Setup(r => r.GetString(2))
-                .Returns(() => readCallCount == 1 ? "Technology" : "Food");
+                .Returns(() => rows[rowIndex].Category);
 
             // Setup ExecuteReader() to return our mock reader
             mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);
@@ -75,14 +88,30 @@ namespace ProductManager.Tests
             var mockCommand = new Mock<IDbCommand>();
             var mockReader = new Mock<IDataReader>();
 
+            var rows = new List<(int Id, string Name, string Category)>
+            {
+                (1, "iPhone 17 Pro", "Technology"),
+                (2, "Table", "Furniture"),
+                (3, "MacBook Pro", "Technology"),
+                (4, "Chair", "Furniture"),
+            };
+            int rowIndex = -1;
+
             // Setup mock Read to increment and read value
-            var readCallCount = 0;
-            mockReader.Setup(r => r.Read()).Returns(() => readCallCount++ == 0);
+            mockReader.Setup(r => r.Read()).Returns(() =>
+            {
+                rowIndex++;
+                return rowIndex < rows.Count;
+            });
+
 
             // Mock return values for ID, Name and Category
-            mockReader.Setup(r => r.GetInt32(0)).Returns(1);
-            mockReader.Setup(r => r.GetString(1)).Returns("iPhone 17 Pro");
-            mockReader.Setup(r => r.GetString(2)).Returns("Technology");
+            mockReader.Setup(r => r.GetInt32(0))
+                .Returns(() => rows[rowIndex].Id);
+            mockReader.Setup(r => r.GetString(1))
+                .Returns(() => rows[rowIndex].Name);
+            mockReader.Setup(r => r.GetString(2))
+                .Returns(() => rows[rowIndex].Category);
 
             // Setup ExecuteReader() to return our mock reader
             mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);

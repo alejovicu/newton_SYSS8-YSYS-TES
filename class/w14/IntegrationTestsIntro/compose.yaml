@@ -1,0 +1,9 @@
+services:
+  app-backend-dev:
+    ports:
+      - "8000:8000"
+    image: "alejovicu/app-backend:1.0.3"
+  app-backend-test:
+    ports:
+      - "9000:8000"
+    image: "alejovicu/app-backend:1.0.3"

@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{app_url}}/user"
+method: GET
+headers:
+  Authorization: bearer {{access_token}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Contains Products", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.products).to.have.lengthOf(0);
+      });
+    language: text/javascript
+order: 2000

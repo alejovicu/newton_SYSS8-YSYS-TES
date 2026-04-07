@@ -1,0 +1,31 @@
+$kind: http-request
+name: Add a product
+url: "{{app_url}}/product"
+method: POST
+headers:
+  Authorization: bearer {{admin_token}}
+body:
+  type: json
+  content: '{ "name": "{{product_name}}", "price": 0.99 }'
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      pm.test(\"Product exists in catalog\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"product\
+      _name\"));\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: pm.collectionVariables.set("product_name", "Product_" +
+      Math.random().toString(36).substring(2, 8));
+    language: text/javascript
+order: 3000

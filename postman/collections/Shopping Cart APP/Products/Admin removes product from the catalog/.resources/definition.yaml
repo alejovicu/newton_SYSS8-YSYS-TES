@@ -1,0 +1,8 @@
+$kind: collection
+description: |-
+  Given I am an admin user​
+
+  When I remove a product from the catalog​
+
+  Then The product should not be listed in the app to be used
+order: 2000

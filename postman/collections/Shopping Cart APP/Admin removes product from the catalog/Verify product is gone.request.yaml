@@ -1,0 +1,26 @@
+$kind: http-request
+name: Verify product is gone
+url: "{{app_url}}/products"
+method: GET
+headers:
+  Authorization: bearer {{admin_token}}
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      pm.test(\"Product is no longer in catalog\", function () {\r
+
+      \    var products = pm.response.json();\r
+
+      \    var found = products.some(p => p.id ==
+      pm.collectionVariables.get(\"product_id\"));\r
+
+      \    pm.expect(found).to.be.false;\r
+
+      });"
+    language: text/javascript
+order: 4122827671151565

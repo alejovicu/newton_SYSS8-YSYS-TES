@@ -1,0 +1,16 @@
+# Use this workspace to collaborate
+workspace:
+  id: 19910beb-7d90-41d4-8ef1-5ff1d5781b2b
+
+localResources:
+  collections:
+    - ..\class\w15\newman\collection\ShoppingCartAPP.postman_collection.json
+    - ..\labs\w15\newman\collection\ShoppingCartAPP.postman_collection.json
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  environments:
+    ..\postman\environments\dev.environment.yaml: d111bec0-cf3a-4525-90cc-6361d9b43c83
+  collections:
+    ..\postman\collections\Shopping Cart APP: 53300962-af68821b-62d3-4143-8cfb-53feee91582f

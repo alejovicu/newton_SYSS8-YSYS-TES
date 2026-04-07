@@ -1,0 +1,43 @@
+$kind: http-request
+url: "{{app_url}}/signup"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "username": "{{newCustomer}}",
+      "password": "1234"
+    }
+scripts:
+  - type: beforeRequest
+    code: >-
+      function generateRandomString(length) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          let result = '';
+          for (let i = 0; i < length; i++) {
+              result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+      }
+
+
+      const newCustomer = "customer_"+generateRandomString(20);
+
+
+      pm.collectionVariables.set("newCustomer", newCustomer);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      const expectedUsername = pm.collectionVariables.get("newCustomer");
+
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Username is correct", function () {
+          var jsonData = pm.response.json();
+          
+          pm.expect(jsonData.username).to.eql( expectedUsername );
+      });
+    language: text/javascript
+order: 1000

@@ -1,0 +1,8 @@
+$kind: collection
+description: |-
+  Given I am a customer​
+
+  When I log in into the application​
+
+  Then I should see all the products on my cart
+order: 2000

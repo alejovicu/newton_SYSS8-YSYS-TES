@@ -227,12 +227,328 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create product",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function generateRandomString(length) {",
+                      "    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";",
+                      "    let result = \"\";",
+                      "    for (let i = 0; i < length; i++) {",
+                      "        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+                      "    }",
+                      "    return result;",
+                      "}",
+                      "pm.collectionVariables.set(\"newProduct\", \"product_\" + generateRandomString(10));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Product name is correct\", function () {",
+                      "    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get(\"newProduct\"));",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set(\"product_id\", pm.response.json().id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{newProduct}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List products",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Product is available in the catalog\", function () {",
+                      "    var products = pm.response.json();",
+                      "    var productId = pm.collectionVariables.get(\"product_id\");",
+                      "    var found = products.find(function(p) { return p.id === productId; });",
+                      "    pm.expect(found).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{app_url}}/products",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add product to delete",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function generateRandomString(length) {",
+                      "    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";",
+                      "    let result = \"\";",
+                      "    for (let i = 0; i < length; i++) {",
+                      "        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+                      "    }",
+                      "    return result;",
+                      "}",
+                      "pm.collectionVariables.set(\"productToDelete\", \"product_\" + generateRandomString(10));"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set(\"product_id\", pm.response.json().id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{productToDelete}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete product",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Product is not in the catalog\", function () {",
+                      "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get(\"product_id\"));",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{app_url}}/product/{{product_id}}",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product",
+                    "{{product_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -289,6 +605,18 @@
     },
     {
       "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    },
+    {
+      "key": "newProduct",
+      "value": ""
+    },
+    {
+      "key": "productToDelete",
       "value": ""
     }
   ]

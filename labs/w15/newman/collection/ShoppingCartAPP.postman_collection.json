@@ -1,0 +1,295 @@
+{
+  "info": {
+    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "name": "Shopping Cart APP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53690483",
+    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Register new customer",
+          "item": [
+            {
+              "name": "Create new customer",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function generateRandomString(length) {",
+                      "    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+                      "    let result = '';",
+                      "    for (let i = 0; i < length; i++) {",
+                      "        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+                      "    }",
+                      "    return result;",
+                      "}",
+                      "",
+                      "const newCustomer = \"customer_\"+generateRandomString(20);",
+                      "",
+                      "pm.collectionVariables.set(\"newCustomer\", newCustomer);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const expectedUsername = pm.collectionVariables.get(\"newCustomer\");",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Username is correct\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    ",
+                      "    pm.expect(jsonData.username).to.eql( expectedUsername );",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{newCustomer}}\",\n  \"password\": \"1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/signup",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login as new customer",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{newCustomer}}\",\n  \"password\": \"1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Given I am a new potential customer​\n\nWhen I sign in in the app​\n\nThen I should be able to log in as an application customer"
+        },
+        {
+          "name": "Customer list products in cart",
+          "item": [
+            {
+              "name": "Login as customer",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{newCustomer}}\",\n  \"password\": \"1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List products in customer's cart",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test(\"Contains Products\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.products).to.have.lengthOf(0);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{app_url}}/user",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "user"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Given I am a customer​\n\nWhen I log in into the application​\n\nThen I should see all the products on my cart"
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Admin adds product to the catalog",
+          "item": [],
+          "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
+        },
+        {
+          "name": "Admin removes product from the catalog",
+          "item": [],
+          "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
+        }
+      ]
+    },
+    {
+      "name": "healthcheck",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{app_url}}/health",
+          "host": [
+            "{{app_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "newCustomer",
+      "value": ""
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    }
+  ]
+}

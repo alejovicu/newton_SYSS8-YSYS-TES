@@ -1,0 +1,5 @@
+<RunSettings>
+  <TestRunParameters>
+    <Parameter name="appUrl" value="http://localhost:8000" />
+  </TestRunParameters>
+</RunSettings>

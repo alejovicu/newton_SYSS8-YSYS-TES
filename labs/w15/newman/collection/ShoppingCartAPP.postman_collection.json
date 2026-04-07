@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "_postman_id": "e889f5ae-6b1c-4682-93c9-f437e57d823b",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+    "_exporter_id": "53706674",
+    "_collection_link": "https://go.postman.co/collection/53706674-e889f5ae-6b1c-4682-93c9-f437e57d823b?source=collection_link"
   },
   "item": [
     {
@@ -219,6 +219,70 @@
             }
           ],
           "description": "Given I am a customer​\n\nWhen I log in into the application​\n\nThen I should see all the products on my cart"
+        },
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Parse response\r",
+                      "let jsonData = pm.response.json();\r",
+                      "\r",
+                      "// Spara token i collection variables (inte environment)\r",
+                      "pm.collectionVariables.set(\"token\", jsonData.access_token);\r",
+                      "\r",
+                      "// Debug\r",
+                      "console.log(\"Token:\", jsonData.access_token);\r",
+                      "\r",
+                      "// Tests\r",
+                      "pm.test(\"Login success\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(jsonData.access_token).to.not.be.undefined;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "packages": {},
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     },
@@ -227,12 +291,159 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Create Product",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "let token = pm.collectionVariables.get(\"token\");\r",
+                      "let productName = \"Apple_\" + Date.now();\r",
+                      "pm.collectionVariables.set(\"productName\", productName);\r",
+                      "\r",
+                      "pm.request.headers.upsert({\r",
+                      "    key: \"Authorization\",\r",
+                      "    value: \"Bearer \" + token\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "let jsonData = pm.response.json();\r",
+                      "let expectedName = pm.collectionVariables.get(\"productName\");\r",
+                      "\r",
+                      "pm.test(\"Status is 200 or 201\", function () {\r",
+                      "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Product created with correct name\", function () {\r",
+                      "    pm.expect(jsonData.name).to.eql(expectedName);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Product has id\", function () {\r",
+                      "    pm.expect(jsonData.id).to.not.be.undefined;\r",
+                      "});\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"productId\", jsonData.id);\r",
+                      "console.log(\"Saved productId:\", jsonData.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"{{productName}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Delete Product",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "let token = pm.collectionVariables.get(\"token\");\r",
+                      "let productId = pm.collectionVariables.get(\"productId\");\r",
+                      "\r",
+                      "console.log(\"token:\", token);\r",
+                      "console.log(\"productId:\", productId);\r",
+                      "\r",
+                      "pm.request.headers.upsert({\r",
+                      "    key: \"Authorization\",\r",
+                      "    value: \"Bearer \" + token\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "let jsonData = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Status is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Deleted correct product\", function () {\r",
+                      "    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get(\"productId\")));\r",
+                      "    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"productName\"));\r",
+                      "});\r",
+                      "\r",
+                      "pm.collectionVariables.unset(\"productId\");\r",
+                      "pm.collectionVariables.unset(\"productName\");"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product/{{productId}}",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product",
+                    "{{productId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -289,6 +500,10 @@
     },
     {
       "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "token",
       "value": ""
     }
   ]

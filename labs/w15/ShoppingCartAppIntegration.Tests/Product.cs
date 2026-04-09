@@ -60,33 +60,27 @@ public class Product
     [TestMethod]
     public async Task AdminRemovesProductFromTheCatalog()
     {
-        // Arrange
         await LoginAsAdmin();
-        productName = "product_" + RandomString(8);
+        string localProductName = "product_" + RandomString(8); // local, not static
 
-        // First create a product to delete
         var createRequest = new HttpRequestMessage(HttpMethod.Post, $"{GlobalContext.appUrl}/product");
         createRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", adminToken);
         createRequest.Content = new StringContent(
-            JsonSerializer.Serialize(new { name = productName }),
+            JsonSerializer.Serialize(new { name = localProductName }), // use local
             Encoding.UTF8,
             "application/json"
         );
         var createResponse = await client.SendAsync(createRequest);
+        Assert.AreEqual(HttpStatusCode.OK, createResponse.StatusCode);
         int localProductId = JsonDocument.Parse(await createResponse.Content.ReadAsStringAsync()).RootElement.GetProperty("id").GetInt32();
 
-        // Use local variable instead of static
-        int localProductId = json.GetProperty("id").GetInt32();
-
-        // Act (Delete the product
         var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalContext.appUrl}/product/{localProductId}");
         deleteRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", adminToken);
         var deleteResponse = await client.SendAsync(deleteRequest);
 
-        // Assert
         Assert.AreEqual(HttpStatusCode.OK, deleteResponse.StatusCode);
         var deleteJson = JsonDocument.Parse(await deleteResponse.Content.ReadAsStringAsync()).RootElement;
-        Assert.AreEqual(productName, deleteJson.GetProperty("name").GetString());
+        Assert.AreEqual(localProductName, deleteJson.GetProperty("name").GetString()); // use local
         Assert.AreEqual(localProductId, deleteJson.GetProperty("id").GetInt32());
     }
 }

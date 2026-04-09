@@ -1,0 +1,20 @@
+$kind: http-request
+name: Add a product
+url: "{{app_url}}/product"
+method: POST
+headers:
+  Authorization: bearer {{admin_token}}
+body:
+  type: json
+  content: '{ "name": "Melon", "price": 2.99 }'
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      pm.collectionVariables.set(\"product_id\", pm.response.json().id);"
+    language: text/javascript
+order: 3912019931100407

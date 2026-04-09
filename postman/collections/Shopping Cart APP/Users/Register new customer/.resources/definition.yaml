@@ -1,0 +1,8 @@
+$kind: collection
+description: |-
+  Given I am a new potential customer​
+
+  When I sign in in the app​
+
+  Then I should be able to log in as an application customer
+order: 1000

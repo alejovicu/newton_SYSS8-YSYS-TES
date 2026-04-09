@@ -1,0 +1,19 @@
+$kind: http-request
+name: Login as admin
+url: "{{app_url}}/login"
+method: POST
+body:
+  type: json
+  content: '{ "username": "ph", "password": "123" }'
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      pm.collectionVariables.set(\"admin_token\",
+      pm.response.json().access_token);"
+    language: text/javascript
+order: 3516344003146369

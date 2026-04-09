@@ -1,0 +1,8 @@
+$kind: collection
+name: Shopping Cart APP
+variables:
+  newCustomer: ""
+  access_token: ""
+  admin_token: ""
+  product_id: ""
+  product_name: ""

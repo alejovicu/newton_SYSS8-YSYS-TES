@@ -1,0 +1,8 @@
+$kind: collection
+description: |-
+  Given I am an admin user​
+
+  When I add a product to the catalog​
+
+  Then The product is available to be used in the app
+order: 1000

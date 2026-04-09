@@ -1,0 +1,15 @@
+$kind: http-request
+name: Delete product
+url: "{{app_url}}/product/{{product_id}}"
+method: DELETE
+headers:
+  Authorization: bearer {{admin_token}}
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 3957116070123752

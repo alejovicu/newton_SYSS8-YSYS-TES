@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "_postman_id": "028d4e9d-fd79-4a30-958e-fcc71a9fa590",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+    "_exporter_id": "53330434",
+    "_collection_link": "https://go.postman.co/collection/53330434-028d4e9d-fd79-4a30-958e-fcc71a9fa590?source=collection_link"
   },
   "item": [
     {
@@ -227,12 +227,233 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "pm.sendRequest({\r",
+                      "    url: pm.environment.get(\"app_url\") + \"/login\",\r",
+                      "    method: \"POST\",\r",
+                      "    header: {\r",
+                      "        \"Content-Type\": \"application/json\"\r",
+                      "    },\r",
+                      "    body: {\r",
+                      "        mode: \"raw\",\r",
+                      "        raw: JSON.stringify({\r",
+                      "            username: \"admin\",\r",
+                      "            password: \"admin\"\r",
+                      "        })\r",
+                      "    }\r",
+                      "}, function (err, res) {\r",
+                      "    const jsonData = res.json();\r",
+                      "    pm.collectionVariables.set(\"access_token\", jsonData.access_token);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add a new product",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function generateRandomString(length) {\r",
+                      "    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+                      "    let result = '';\r",
+                      "    for (let i = 0; i < length; i++) {\r",
+                      "        result += chars.charAt(Math.floor(Math.random() * chars.length));\r",
+                      "    }\r",
+                      "    return result;\r",
+                      "}\r",
+                      "\r",
+                      "const newProduct = \"product_\"+generateRandomString(20);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"new_product\", newProduct);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.expect(pm.response.code).to.eql(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Product was created\", function () {\r",
+                      "    const jsonData = pm.response.json();\r",
+                      "    const expectedName = pm.collectionVariables.get(\"new_product\"); \r",
+                      "    pm.expect(jsonData).to.have.property(\"name\");\r",
+                      "    pm.expect(jsonData.name).to.eql(expectedName);\r",
+                      "});\r",
+                      "\r",
+                      "const jsonData = pm.response.json();\r",
+                      "pm.collectionVariables.set(\"product_id\", jsonData.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{access_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{access_token}}",
+                    "description": "Bearer ",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"{{new_product}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Delete product as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.expect(pm.response.code).to.eql(200);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"product_id\": \"{{new_product}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product/{{product_id}}",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product",
+                    "{{product_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -282,6 +503,30 @@
       "response": []
     }
   ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
   "variable": [
     {
       "key": "newCustomer",
@@ -289,6 +534,14 @@
     },
     {
       "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    },
+    {
+      "key": "new_product",
       "value": ""
     }
   ]

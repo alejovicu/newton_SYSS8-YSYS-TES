@@ -5,6 +5,8 @@ public class BookstoreInventory
 
     private readonly List<Book> _books = new List<Book>();
 
+
+
     public bool AddBook(Book book)
     {
 
@@ -19,11 +21,13 @@ public class BookstoreInventory
 
         }
 
-        existingBook.Stock += book.Stock;
+        existingBook.Stock += book.Stock; // Restock existing book
 
-        return false;
+        return false; // Indicates existing book was restocked
 
     }
+
+
 
     public bool RemoveBook(string isbn)
     {
@@ -33,7 +37,7 @@ public class BookstoreInventory
         if (bookToRemove != null)
         {
 
-            bookToRemove.Stock++;
+            bookToRemove.Stock--;
 
             return true;
 
@@ -43,12 +47,15 @@ public class BookstoreInventory
 
     }
 
+
+
     public Book FindBookByTitle(string title)
     {
 
         return _books.FirstOrDefault(b => b.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
 
     }
+
 
     public int CheckStock(string isbn)
     {

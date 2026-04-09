@@ -1,7 +1,7 @@
 namespace Bookstore;
 
-public class Book
-{
+public class Book {
+
     public string ISBN { get; set; }
 
     public string Title { get; set; }
@@ -10,12 +10,18 @@ public class Book
 
     public int Stock { get; set; }
 
-    public Book(string isbn, string title, string author, int stock)
-    {
+
+
+    public Book(string isbn, string title, string author, int stock) {
+
         ISBN = isbn;
+
         Title = title;
+
         Author = author;
+
         Stock = stock;
+
     }
 
 }

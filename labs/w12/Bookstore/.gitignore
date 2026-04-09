@@ -1,0 +1,20 @@
+# Build results
+bin/
+obj/
+
+# Coverage reports
+coveragereport/
+coverage-report/
+
+# IDE
+.rider/
+.idea/
+*.sln.iml
+
+# Test Results
+TestResults/
+*.trx
+
+# OS
+.DS_Store
+

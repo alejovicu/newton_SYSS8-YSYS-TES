@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "_postman_id": "a8280324-8ba0-4fab-a0ee-a3e3e8162397",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+    "_exporter_id": "52171946",
+    "_collection_link": "https://go.postman.co/collection/52171946-a8280324-8ba0-4fab-a0ee-a3e3e8162397?source=collection_link"
   },
   "item": [
     {
@@ -216,6 +216,14 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "New Request",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": []
             }
           ],
           "description": "Given I am a customer​\n\nWhen I log in into the application​\n\nThen I should see all the products on my cart"
@@ -227,12 +235,294 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
-          "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
+          "item": [
+            {
+              "name": "LoginAsAdmin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.collectionVariables.set(\"admin_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"Admin\",\r\n  \"password\": \"Admin\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "AddProduct",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function generateRandomString(length) {\r",
+                      "    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+                      "    let result = '';\r",
+                      "    for (let i = 0; i < length; i++) {\r",
+                      "        result += chars.charAt(Math.floor(Math.random() * chars.length));\r",
+                      "    }\r",
+                      "    return result;\r",
+                      "}\r",
+                      "\r",
+                      "const newproduct = \"product_\"+generateRandomString(20);\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"newproduct\", newproduct);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Product is correct\", function () {\r",
+                      "    var jsonData = pm.response.json();\r",
+                      "    \r",
+                      "    pm.expect(jsonData.name).to.eql( pm.collectionVariables.get(\"newproduct\"); );\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disabledSystemHeaders": {}
+              },
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{admin_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"{{newproduct}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "AddProduct",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "bearer {{admin_token}}"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"name\": \"Car\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{app_url}}/product",
+                      "host": [
+                        "{{app_url}}"
+                      ],
+                      "path": [
+                        "product"
+                      ]
+                    }
+                  },
+                  "status": "Conflict",
+                  "code": 409,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "date",
+                      "value": "Tue, 07 Apr 2026 13:05:28 GMT"
+                    },
+                    {
+                      "key": "server",
+                      "value": "uvicorn"
+                    },
+                    {
+                      "key": "content-length",
+                      "value": "58"
+                    },
+                    {
+                      "key": "content-type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"detail\": \"A product with the name [Car] already exists.\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "GetProducts",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": []
+            }
+          ],
+          "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app",
+          "auth": {
+            "type": "apikey"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "LoginAsAdmin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.collectionVariables.set(\"admin_token\", pm.response.json().access_token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"Admin\",\r\n  \"password\": \"Admin\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "DeleteProduct{id}",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{app_url}}/product/{{newproductID}}",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product",
+                    "{{newproductID}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -289,6 +579,18 @@
     },
     {
       "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "newproduct",
+      "value": ""
+    },
+    {
+      "key": "newproductID",
       "value": ""
     }
   ]

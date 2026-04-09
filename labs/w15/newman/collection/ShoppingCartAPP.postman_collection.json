@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "_postman_id": "d6c4cafd-73c1-4939-a95c-656899c14bc1",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+    "_exporter_id": "53633813",
+    "_collection_link": "https://go.postman.co/collection/53633813-d6c4cafd-73c1-4939-a95c-656899c14bc1?source=collection_link"
   },
   "item": [
     {
@@ -176,6 +176,65 @@
               "response": []
             },
             {
+              "name": "products List",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{access_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{app_url}}/products",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "List products in customer's cart",
               "event": [
                 {
@@ -227,12 +286,30 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Create product",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Delete Product",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -289,6 +366,14 @@
     },
     {
       "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "productName",
+      "value": ""
+    },
+    {
+      "key": "productId",
       "value": ""
     }
   ]

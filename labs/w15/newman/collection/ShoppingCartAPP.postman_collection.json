@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4bf600f8-3839-43ef-bbe7-1b35dc205a22",
+    "_postman_id": "6b634c2c-2900-4605-a3d7-b843975ec291",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4bf600f8-3839-43ef-bbe7-1b35dc205a22?source=collection_link"
+    "_exporter_id": "53699609",
+    "_collection_link": "https://go.postman.co/collection/53699609-6b634c2c-2900-4605-a3d7-b843975ec291?source=collection_link"
   },
   "item": [
     {
@@ -94,11 +94,20 @@
                       "pm.test(\"Status code is 200\", function () {",
                       "    pm.response.to.have.status(200);",
                       "});",
+                      "",
+                      "pm.collectionVariables.set(\"token\", pm.response.json().token);",
                       ""
                     ],
                     "type": "text/javascript",
                     "packages": {},
                     "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "packages": {},
+                    "type": "text/javascript"
                   }
                 }
               ],
@@ -227,12 +236,264 @@
       "item": [
         {
           "name": "Admin adds product to the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set(\"token\", json.access_token);",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add product as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set(\"product_id\", json.id);",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Product was created with an ID\", function () {",
+                      "    pm.expect(json.id).to.be.a(\"number\");",
+                      "    pm.expect(json.id).to.be.above(0);",
+                      "});",
+                      "",
+                      "pm.test(\"Product name matches the request\", function () {",
+                      "    const sentName = pm.collectionVariables.get(\"random_product_name\");",
+                      "    pm.expect(json.name).to.eql(sentName);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const randomProduct = \"product_\" + Math.random().toString(36).substring(2, 8);",
+                      "pm.collectionVariables.set(\"random_product_name\", randomProduct);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{random_product_name}}\",\n  \"price\": 99.99\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I add a product to the catalog​\n\nThen The product is available to be used in the app"
         },
         {
           "name": "Admin removes product from the catalog",
-          "item": [],
+          "item": [
+            {
+              "name": "Login as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set(\"token\", json.access_token);",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/login",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remove product as admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Product removed\", () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.collectionVariables.unset(\"access_token\");",
+                      "pm.collectionVariables.unset(\"product_id\");",
+                      "pm.collectionVariables.unset(\"random_product_name\");"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{app_url}}/product/{{product_id}}",
+                  "host": [
+                    "{{app_url}}"
+                  ],
+                  "path": [
+                    "product",
+                    "{{product_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
           "description": "Given I am an admin user​\n\nWhen I remove a product from the catalog​\n\nThen The product should not be listed in the app to be used"
         }
       ]
@@ -282,13 +543,37 @@
       "response": []
     }
   ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
   "variable": [
     {
       "key": "newCustomer",
       "value": ""
     },
     {
-      "key": "access_token",
+      "key": "token",
       "value": ""
     }
   ]

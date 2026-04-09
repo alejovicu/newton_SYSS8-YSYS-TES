@@ -24,23 +24,26 @@ public class BookstoreInventory
         return false;
 
     }
-
+    
+    // Changing this method so it correctly removes the book
     public bool RemoveBook(string isbn)
     {
-
+        // Find the book by ISBN
         var bookToRemove = _books.FirstOrDefault(b => b.ISBN == isbn);
 
-        if (bookToRemove != null)
-        {
+        // If the book exists and has stock, reduce the stock by one
+        if (bookToRemove != null && bookToRemove.Stock > 0)
+        {        
+            bookToRemove.Stock--;
 
-            bookToRemove.Stock++;
-
+            // If the stock reaches zero, remove the book from the inventory
+            if (bookToRemove.Stock == 0)
+            {
+                _books.Remove(bookToRemove);
+            }
             return true;
-
         }
-
         return false;
-
     }
 
     public Book FindBookByTitle(string title)

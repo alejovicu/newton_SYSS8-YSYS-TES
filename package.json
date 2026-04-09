@@ -1,0 +1,21 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "* Git\r * Github account\r * This repo forked into your account, then clone your fork to your computer\r * `dotnet` cli command installed\r * Docker or Podman\r * Postman",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Merhawit-create/newton_SYSS8-YSYS-TES.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Merhawit-create/newton_SYSS8-YSYS-TES/issues"
+  },
+  "homepage": "https://github.com/Merhawit-create/newton_SYSS8-YSYS-TES#readme"
+}

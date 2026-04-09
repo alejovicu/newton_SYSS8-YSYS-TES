@@ -22,6 +22,12 @@ dotnet add CalculatorApp.Tests reference CalculatorApp
 ```
 
 
+
+
+
+
+
+
 Let's implement the Operations and unit tests, then Run the unit tests.
 
 1. Create the file `class/w12/Calculator/CalculatorApp/Calculator.cs`

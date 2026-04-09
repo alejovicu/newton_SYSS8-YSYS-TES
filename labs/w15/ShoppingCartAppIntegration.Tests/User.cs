@@ -1,5 +1,8 @@
 ﻿namespace ShoppingCartAppIntegration.Tests;
 
+using System.Text;
+using System.Text.Json;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -8,7 +11,7 @@ using System.Threading.Tasks;
 public class User
 {
     // Local Host and URL
-    private readonly string _appUrl = "http://localhost:8000";
+    private readonly string appUrl = "http://localhost:8000";
     private readonly HttpClient _httpClient = new HttpClient();
 
     private string randomString(int length)
@@ -30,7 +33,7 @@ public class User
 
         // Act
         // Call signup endpoint
-        var response = await _httpClient.PostAsync($"{_appUrl}/signup", new StringContent(
+        var response = await _httpClient.PostAsync($"{appUrl}/signup", new StringContent(
             JsonSerializer.Serialize(new { username, password }),
             Encoding.UTF8,
             "application/json"
@@ -47,7 +50,7 @@ public class User
         Assert.AreEqual(username, jsonResponse.GetProperty("username").GetString());
 
         // Validate if the user can log in with the created credentials
-        var responseLogin = await _httpClient.PostAsync($"{_appUrl}/login", new StringContent(
+        var responseLogin = await _httpClient.PostAsync($"{appUrl}/login", new StringContent(
             JsonSerializer.Serialize(new { username, password }),
             Encoding.UTF8,
             "application/json"
@@ -63,30 +66,32 @@ public class User
         var password = "Password123!";
 
             // SIGN UP, Customer must exist.
-        var responseSignUp = await _httpClient.PostAsync($"{_appUrl}/signup",
+        var responseSignUp = await _httpClient.PostAsync($"{appUrl}/signup",
             new StringContent(JsonSerializer.Serialize(new { username, password }),
             Encoding.UTF8,
             "application/json"
             ));
 
             // LOGIN, Customer must login.
-        var responseLogin = await _httpClient.PostAsync($"{_appUrl}/login",
+        var responseLogin = await _httpClient.PostAsync($"{appUrl}/login",
             new StringContent(JsonSerializer.Serialize(new { username, password }),
             Encoding.UTF8,
             "application/json"
             ));
 
         var loginJson = JsonDocument.Parse(await responseLogin.Content.ReadAsStringAsync());
-        var userId = loginJson.RootElement.GetProperty("id").GetInt32();
 
         // Act
             // Get customer's cart.
-        var responseUserCart = await _httpClient.GetAsync($"{_appUrl}/user");
+        var responseUserCart = await _httpClient.GetAsync($"{appUrl}/user");
 
-        var cartJson = JsonDocument.Parse(await responseUserCart.Content.ReadAsStringAsync());
-        var products = cartJson.RootElement.GetProperty("products");
+        var cartJson = JsonDocument.Parse(await responseUserCart.Content.ReadAsStringAsync()).RootElement;
+        var products = cartJson.GetProperty("products").EnumerateArray();
 
         // Assert
-        Assert.IsTrue(responseUserCart != null);
+        Assert.AreEqual(HttpStatusCode.OK, responseSignUp.StatusCode);
+        Assert.AreEqual(username, loginJson.GetProperty("username").GetString());
+        Assert.AreEqual(HttpStatusCode.OK, responseUserCart.StatusCode);
+        Assert.IsNotNull(products);
     }
 }

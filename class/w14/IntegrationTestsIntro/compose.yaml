@@ -1,13 +1,13 @@
 services:
   app-backend-dev:
     ports:
-      - "8000:8000"
+      - "8010:8000"
     image: "alejovicu/app-backend:1.0.3"
   app-frontend:
     ports:
       - "80:80"
     environment:
-      - VITE_BACKEND_URL=http://localhost:8000
+      - VITE_BACKEND_URL=http://localhost:8010
     deploy:
       resources:
         limits:

@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4c75e1dd-9739-45e5-9cee-c3feee5360e3",
+    "_postman_id": "7d75c6dc-e901-4e8d-b912-48e01e0211a0",
     "name": "Shopping Cart APP",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53690483",
-    "_collection_link": "https://go.postman.co/collection/53690483-4c75e1dd-9739-45e5-9cee-c3feee5360e3?source=collection_link"
+    "_exporter_id": "53813286",
+    "_collection_link": "https://go.postman.co/collection/53813286-7d75c6dc-e901-4e8d-b912-48e01e0211a0?source=collection_link"
   },
   "item": [
     {
@@ -606,6 +606,10 @@
     },
     {
       "key": "productToDelete",
+      "value": ""
+    },
+    {
+      "key": "app_url",
       "value": ""
     }
   ]

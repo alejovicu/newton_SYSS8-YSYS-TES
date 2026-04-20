@@ -33,7 +33,7 @@ public class BookstoreInventory
         if (bookToRemove != null)
         {
 
-            bookToRemove.Stock++;
+            bookToRemove.Stock--;
 
             return true;
 
@@ -58,5 +58,4 @@ public class BookstoreInventory
         return book != null ? book.Stock : 0;
 
     }
-
 }

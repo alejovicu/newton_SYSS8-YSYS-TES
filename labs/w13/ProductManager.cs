@@ -1,5 +1,8 @@
 ﻿namespace LibraryProject.MSTests;
 
+using Npgsql;
+using System.Data;
+
 public class ProductManager
 {
     private readonly IDbConnection _connection;
@@ -36,3 +39,4 @@ public class ProductManager
         return all.Where(p => p.Category == category).ToList(); // filtret i C#
     }
 }
+
